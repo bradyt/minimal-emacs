@@ -1,12 +1,14 @@
-(setq-default indent-tabs-mode nil)
+(defvar bootstrap-version)
+(let ((bootstrap-file
+       (expand-file-name "straight/repos/straight.el/bootstrap.el" user-emacs-directory))
+      (bootstrap-version 5))
+  (unless (file-exists-p bootstrap-file)
+    (with-current-buffer
+        (url-retrieve-synchronously
+         "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+         'silent 'inhibit-cookies)
+      (goto-char (point-max))
+      (eval-print-last-sexp)))
+  (load bootstrap-file nil 'nomessage))
 
-(require 'package)
-
-(setq package-archives
-      '(("gnu" . "https://elpa.gnu.org/packages/")
-        ("nongnu" . "https://elpa.nongnu.org/nongnu/")))
-
-(let ((my-pkgs '(magit)))
-  (when (seq-remove 'package-installed-p my-pkgs)
-    (package-refresh-contents)
-    (mapc (lambda (pkg) (package-install pkg t)) my-pkgs)))
+(mapc 'straight-use-package '(magit))
